@@ -80,17 +80,23 @@ public class Columna {
         return presente;
     }
 
+    public boolean[] getDif() {
+        return dif;
+    }
+    
+
     /* metodo que dadas dos columnas devuelve
-     *  un arreglo de boolean que indica en que difiere la 2da de la 1era
+     * un boolean que indica si difieren las columnas
+     * y si difieren, guarda un arreglo de bool con sus diferencias
      */
-    public void equals(Columna other) {
+    public boolean equals(Columna other) {
 
         //campo que indica si se encontro alguna diferencia
         boolean aux=true;
         boolean difer[] = {true, true, true, true, true, true};
 
         if (other == null) {
-            //exception TODO........
+            return false;//exception TODO........
         } else {
             //si el nombre es igual, se compara ambas columnas
             if (this.nombre.equals(other.nombre)) {
@@ -122,9 +128,13 @@ public class Columna {
                 if(!aux){
                     this.dif = difer;
                     other.dif = difer;
+                    return false;
                 }
                 //caso contrario, no se hace nada y ambos dif (de ambas columnas) quedan en null
+                return true;
                 
+            }else{  
+                return false;
             }
         }
 
