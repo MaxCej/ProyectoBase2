@@ -29,6 +29,7 @@ public class BaseDeDatos {
     public BaseDeDatos(String nombreBase) {
         this.nombreBase = nombreBase;
         this.tablas = new LinkedList();
+        this.dif=new LinkedList();
     }
 
     /*

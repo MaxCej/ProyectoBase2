@@ -46,23 +46,51 @@ public class ComparadorBases {
          */
 
         boolean res;
-        Columna c1 = new Columna("pepito", 0, "varchar", 40, true, false);
-        Columna c2 = new Columna("pepito", 0, "varchar", 40, true, false);
+        Columna c1 = new Columna("c1", 0, "varchar", 40, true, false);
+        Columna c2 = new Columna("c1", 0, "varchar", 40, true, false);
+        Columna c3 = new Columna("c2", 0, "varchar", 40, true, false);
+        Columna c4 = new Columna("c2", 0, "varchar", 40, true, false);
+        Columna c5 = new Columna("c4", 0, "varchar", 40, true, false);
+        Columna c6 = new Columna("c4", 0, "varchar", 40, true, false);
+        Columna c7 = new Columna("c4", 1, "varchar", 40, true, false);
         Tabla t1 = new Tabla("juan");
         t1.agregarColumna(c1);
-        Tabla t2 = new Tabla("juan");
+        t1.agregarColumna(c3);
+        t1.agregarColumna(c5);
+        Tabla t2 = new Tabla("pepe");
         t2.agregarColumna(c2);
-        res = t1.compararTablas(t2);
-        System.out.println(res);
-        for (int i = 0; i < t1.dif.size(); i++) {
-            System.out.println(t1.Columnas.get(i).nombre);
-            System.out.println(t1.dif.get(i));
-            System.out.println("---------------------");
-            System.out.println(t2.Columnas.get(i).nombre);
-            System.out.println(t2.dif.get(i));
-            System.out.println("---------------------");
-        }
+        t2.agregarColumna(c4);
+        t2.agregarColumna(c6);
+        Tabla t3 = new Tabla("juan");
+        t3.agregarColumna(c1);
+        t3.agregarColumna(c3);
+        t3.agregarColumna(c5);
+        Tabla t4 = new Tabla("pepe");
+        t4.agregarColumna(c2);
+        t4.agregarColumna(c4);
+        t4.agregarColumna(c7);
+        //res = t1.compararTablas(t2);
 
+        BaseDeDatos bd1 = new BaseDeDatos("base1");
+        bd1.agregarTabla(t1);
+        bd1.agregarTabla(t2);
+        BaseDeDatos bd2 = new BaseDeDatos("base2");
+        bd2.agregarTabla(t3);
+        bd2.agregarTabla(t4);
+        res = bd1.equals(bd2);
+
+        System.out.println("bases iguales?: " + res + "\n-------------------------");
+        for (int i = 0; i < bd1.tablas.size(); i++) {
+            System.out.println(bd1.tablas.get(i).nombre);
+            System.out.println(bd1.dif.get(i));
+        }
+        System.out.println("---------------------");
+
+        for (int i = 0; i < bd2.tablas.size(); i++) {
+            System.out.println(bd2.tablas.get(i).nombre);
+            System.out.println(bd2.dif.get(i));
+        }
+        System.out.println("---------------------");
         //TEST DE COLUMNAS
         /*
          res = c1.equals(c2);
