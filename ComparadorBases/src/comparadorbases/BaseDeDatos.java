@@ -24,12 +24,20 @@ public class BaseDeDatos {
      * 2 = la columna no existe en la otra tabla
      */
     LinkedList<Integer> dif;
+    /*
+     Lista de TODOS los nombres de triggers de la base de datos
+     */
+    LinkedList<String> triggers;
+    //Lista de triggers UNICOS de la DB
+    LinkedList<String> difTriggers;
 
     //constructor de clase
     public BaseDeDatos(String nombreBase) {
         this.nombreBase = nombreBase;
         this.tablas = new LinkedList();
-        this.dif=new LinkedList();
+        this.dif = new LinkedList();
+        this.triggers = new LinkedList();
+        this.difTriggers = new LinkedList();
     }
 
     /*
@@ -42,16 +50,20 @@ public class BaseDeDatos {
         this.dif.addLast(2);
     }
 
+    public void agregarTrigger(String t) {
+        this.triggers.addLast(t);
+    }
+
     public boolean equals(BaseDeDatos bd2) {
         int i, j;
         boolean aux;
         boolean res = true;
         boolean mismoNombre;
-                
-        if(this.tablas.size()!=bd2.tablas.size()){
+
+        if (this.tablas.size() != bd2.tablas.size()) {
             res = false;
         }
-        
+
         for (i = 0; i < this.tablas.size(); i++) {
             for (j = 0; j < bd2.tablas.size(); j++) {
                 mismoNombre = this.tablas.get(i).nombre.equals(bd2.tablas.get(j).nombre);
@@ -73,10 +85,43 @@ public class BaseDeDatos {
                 }
                 //Si llego al final del ciclo, la i-esima tabla de la 1era base
                 //no esta en la segunda
-                if(j == bd2.tablas.size()-1){
+                if (j == bd2.tablas.size() - 1) {
                     res = false;
                 }
             }
+        }
+        return res;
+    }
+
+    /*Metodo que dadas dos bases de datos retorna true si
+     la lista de triggers de la 1er base esta incluida
+     en la lista de triggers de la 2da y en caso de haber
+     triggers de la 1er BD que no esten en la 2da, se guardan en una lista
+     dentro de la 1er BD
+     */
+    public boolean esSubconjuntoTriggers(BaseDeDatos other) {
+        boolean res = true;
+        if (this.triggers.size() > other.triggers.size()) {
+            res = false;
+        }
+
+        for (int i = 0; i < this.triggers.size(); i++) {
+            for (int j = 0; j < other.triggers.size(); j++) {
+                System.out.println("compara: "+this.triggers.get(i)+" con "+other.triggers.get(j));
+                boolean resParcial = (this.triggers.get(i).equals(other.triggers.get(j)));
+                System.out.println("resparcial: "+resParcial);
+                if (resParcial) {
+                    break;
+                }
+                if (j == other.triggers.size() - 1) {
+                    this.difTriggers.add(this.triggers.get(i));
+                    res = false;
+                }
+            }
+            //resTotal=resTotal && resParcial;
+            //if(){
+            //    res=false;
+            //}
         }
         return res;
     }
