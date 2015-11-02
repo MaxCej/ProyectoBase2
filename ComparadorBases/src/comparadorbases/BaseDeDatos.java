@@ -27,9 +27,14 @@ public class BaseDeDatos {
     /*
      Lista de TODOS los nombres de triggers de la base de datos
      */
-    LinkedList<String> triggers;
-    //Lista de triggers UNICOS de la DB
-    LinkedList<String> difTriggers;
+    LinkedList<Trigger> triggers;
+    //Lista de triggers en que difieren las bases comparadas
+    /*
+     * 0 = mismo nombre, identicos
+     * 1 = mismo nombre, distintos
+     * 2 = trigger inexistente en la otra base de datos
+     */
+    LinkedList<Integer> difTriggers;
 
     //constructor de clase
     public BaseDeDatos(String nombreBase) {
@@ -50,8 +55,9 @@ public class BaseDeDatos {
         this.dif.addLast(2);
     }
 
-    public void agregarTrigger(String t) {
+    public void agregarTrigger(Trigger t) {
         this.triggers.addLast(t);
+        this.difTriggers.addLast(2);
     }
 
     public boolean equals(BaseDeDatos bd2) {
@@ -99,7 +105,7 @@ public class BaseDeDatos {
      triggers de la 1er BD que no esten en la 2da, se guardan en una lista
      dentro de la 1er BD
      */
-    public boolean esSubconjuntoTriggers(BaseDeDatos other) {
+    public boolean comparadorTriggers(BaseDeDatos other) {
         boolean res = true;
         if (this.triggers.size() > other.triggers.size()) {
             res = false;
@@ -107,21 +113,30 @@ public class BaseDeDatos {
 
         for (int i = 0; i < this.triggers.size(); i++) {
             for (int j = 0; j < other.triggers.size(); j++) {
-                System.out.println("compara: "+this.triggers.get(i)+" con "+other.triggers.get(j));
-                boolean resParcial = (this.triggers.get(i).equals(other.triggers.get(j)));
-                System.out.println("resparcial: "+resParcial);
-                if (resParcial) {
+                System.out.println("compara: " + this.triggers.get(i).nombre + " con " + other.triggers.get(j).nombre);
+                //si los triggers tienen el mismo nombre
+                if (this.triggers.get(i).nombre.equals(other.triggers.get(j).nombre)) {
+                    System.out.println("mismo nombre");
+                    //comparamos su estructura
+                    boolean resParcial = (this.triggers.get(i).equals(other.triggers.get(j)));
+                    System.out.println("resparcial: " + resParcial);
+                    if (resParcial) {
+                        //tienen el mismo nombre y estructura
+                        this.difTriggers.set(i, 0);
+                        other.difTriggers.set(j, 0);
+                    }else{
+                        //tienen el mismo nombre pero difieren en su estructura
+                        this.difTriggers.set(i, 1);
+                        other.difTriggers.set(j, 1);
+                        res=false;
+                    }
                     break;
                 }
-                if (j == other.triggers.size() - 1) {
-                    this.difTriggers.add(this.triggers.get(i));
+
+                if (j == other.triggers.size()-1) {
                     res = false;
                 }
             }
-            //resTotal=resTotal && resParcial;
-            //if(){
-            //    res=false;
-            //}
         }
         return res;
     }

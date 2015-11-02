@@ -17,8 +17,7 @@ import java.util.LinkedList;
 public class ComparadorBases {
 
     /**
-     * @param args the command line
-     * arguments
+     * @param args the command line arguments
      * @throws java.sql.SQLException
      */
     public static void main(String[] args) { //throws SQLException{
@@ -113,29 +112,64 @@ public class ComparadorBases {
              
          }
          */
-        /* PRUEBA COMPARADOR TRIGGERS
-         BaseDeDatos bd1 = new BaseDeDatos("base1");
-         bd1.agregarTrigger("a");
-         bd1.agregarTrigger("b");
-         bd1.agregarTrigger("c");
-         bd1.agregarTrigger("d");
-         bd1.agregarTrigger("e");
-         bd1.agregarTrigger("f");
-         BaseDeDatos bd2 = new BaseDeDatos("base2");
-         bd2.agregarTrigger("a");
-         bd2.agregarTrigger("b");
-         bd2.agregarTrigger("c");
-         bd2.agregarTrigger("d");
-         boolean res = bd2.esSubconjuntoTriggers(bd1);
-         System.out.println("");
-         System.out.println("es subconjunto?: " + res + "\n-------------------------");
-         if (bd1.difTriggers == null) {
-         System.out.println("son iguales");
-         } else {
-         for (int i = 0; i < bd1.difTriggers.size(); i++) {
-         System.out.println(bd1.difTriggers.get(i));
-         }
-         System.out.println("---------------------");
-         }*/
+        // PRUEBA COMPARADOR TRIGGERS
+        BaseDeDatos bd1 = new BaseDeDatos("base1");
+        Trigger t1 = new Trigger("t1", 0, 0, "tabla1");
+        Trigger t2 = new Trigger("t1", 0, 0, "tabla1");
+        Trigger t3 = new Trigger("t2", 1, 0, "tabla1");
+        bd1.agregarTrigger(t1);
+        BaseDeDatos bd2 = new BaseDeDatos("base2");
+        bd2.agregarTrigger(t2);
+        bd2.agregarTrigger(t3);
+        boolean res = bd2.comparadorTriggers(bd1);
+        System.out.println("");
+        System.out.println("mismos triggers?: " + res + "\n-------------------------");
+        if (bd1.difTriggers != null) {
+            for (int i = 0; i < bd1.difTriggers.size(); i++) {
+                System.out.println(bd1.difTriggers.get(i));
+            }
+            System.out.println("-------------------------");
+            for (int i = 0; i < bd2.difTriggers.size(); i++) {
+                System.out.println(bd2.difTriggers.get(i));
+            }
+            System.out.println("---------------------");
+
+        }
+        System.out.println("---------------------");
     }
+
+    /* PRUEBA PROCEDIMIENTOS
+     BaseDeDatos bd1 = new BaseDeDatos("base1");
+     BaseDeDatos bd2 = new BaseDeDatos("base2");
+
+     Procedimiento p1 = new Procedimiento("nombre1");
+     Parametro param1 = new Parametro("param1", 1);
+     Parametro param4 = new Parametro("param3", 1);
+     Parametro param5 = new Parametro("param5", 1);
+     p1.agregarParametro(param1);
+     p1.agregarParametro(param4);
+
+     Procedimiento p2 = new Procedimiento("nombre1");
+     Parametro param2 = new Parametro("param1", 1);
+     Parametro param3 = new Parametro("param2", 1);
+     p2.agregarParametro(param5);
+     p2.agregarParametro(param2);
+     p2.agregarParametro(param3);
+
+     boolean res = p1.compararProcedimientos(p2);
+     System.out.println(res);
+     System.out.println("");
+     System.out.println("parametros iguales?: " + res + "\n-------------------------");
+     if (p1.dif != null) {
+     for (int i = 0; i < p1.dif.size(); i++) {
+     System.out.println(p1.dif.get(i));
+     }
+     System.out.println("-------------------------");
+     for (int i = 0; i < p2.dif.size(); i++) {
+     System.out.println(p2.dif.get(i));
+     }
+     System.out.println("---------------------");
+
+     }
+     */
 }
