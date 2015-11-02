@@ -40,11 +40,11 @@ public class Procedimiento {
 
     
     /*
-     * Precond: las tablas tienen el mismo nombre
-     * dadas dos tablas devuelve si difieren las tablas
+     * Precond:los procedimientos tienen el mismo nombre
+     * dados dos procedimientos devuelve si difieren en cuanto a sus parametros
      * y a la vez guarda una lista con sus diferencias
      */
-    public boolean compararTablas(Procedimiento other) {
+    public boolean compararProcedimientos(Procedimiento other) {
         int i, j;
         boolean aux;
         boolean res = true;
