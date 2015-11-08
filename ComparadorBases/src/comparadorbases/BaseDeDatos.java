@@ -14,10 +14,10 @@ import java.util.LinkedList;
 public class BaseDeDatos {
 
     //nombre de la BD
-    String nombreBase;
+    private String nombreBase;
 
     //lista de tablas de la BD
-    LinkedList<Tabla> tablas;
+    private LinkedList<Tabla> tablas;
 
     /*LinkedList de enteros que indican las diferencias entre tablas con un mismo nombre
      * Comparacion de columnas de tablas, 
@@ -25,7 +25,7 @@ public class BaseDeDatos {
      * 1 = columnas del mismo nombre, distintas
      * 2 = la columna no existe en la otra tabla
      */
-    LinkedList<Integer> dif;
+    private LinkedList<Integer> dif;
 
     //constructor de clase
     public BaseDeDatos(String nombreBase) {
@@ -40,8 +40,8 @@ public class BaseDeDatos {
      * bases de datos, en cuanto a tablas
      */
     public void agregarTabla(Tabla t) {
-        this.tablas.addLast(t);
-        this.dif.addLast(2);
+        this.getTablas().addLast(t);
+        this.getDif().addLast(2);
     }
 
     public void agregarProcedimiento(Procedimiento p) {
@@ -54,36 +54,57 @@ public class BaseDeDatos {
         boolean res = true;
         boolean mismoNombre;
 
-        if (this.tablas.size() != bd2.tablas.size()) {
+        if (this.getTablas().size() != bd2.getTablas().size()) {
             res = false;
         }
 
-        for (i = 0; i < this.tablas.size(); i++) {
-            for (j = 0; j < bd2.tablas.size(); j++) {
-                mismoNombre = this.tablas.get(i).nombre.equals(bd2.tablas.get(j).nombre);
+        for (i = 0; i < this.getTablas().size(); i++) {
+            for (j = 0; j < bd2.getTablas().size(); j++) {
+                mismoNombre = this.getTablas().get(i).getNombre().equals(bd2.getTablas().get(j).getNombre());
                 //si la i-esima tabla de la 1er bd tiene el mismo nombre que 
                 //la j-esima tabla de la 2da bd, comparamos las tablas
                 if (mismoNombre) {
-                    aux = this.tablas.get(i).compararTablas(bd2.tablas.get(j));
+                    aux = this.getTablas().get(i).compararTablas(bd2.getTablas().get(j));
                     //seteamos en 0 si se llaman igual y son identicas
                     if (aux) {
-                        this.dif.set(i, 0);
-                        bd2.dif.set(j, 0);
+                        this.getDif().set(i, 0);
+                        bd2.getDif().set(j, 0);
                     } else {
                         //seteamos en 1 si se llaman igual y son diferentes
-                        this.dif.set(i, 1);
-                        bd2.dif.set(j, 1);
+                        this.getDif().set(i, 1);
+                        bd2.getDif().set(j, 1);
                         res = false;
                     }
                     break;
                 }
                 //Si llego al final del ciclo, la i-esima tabla de la 1era base
                 //no esta en la segunda
-                if (j == bd2.tablas.size() - 1) {
+                if (j == bd2.getTablas().size() - 1) {
                     res = false;
                 }
             }
         }
         return res;
+    }
+
+    /**
+     * @return the nombreBase
+     */
+    public String getNombreBase() {
+        return nombreBase;
+    }
+
+    /**
+     * @return the tablas
+     */
+    public LinkedList<Tabla> getTablas() {
+        return tablas;
+    }
+
+    /**
+     * @return the dif
+     */
+    public LinkedList<Integer> getDif() {
+        return dif;
     }
 }

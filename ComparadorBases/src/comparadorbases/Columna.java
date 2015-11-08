@@ -14,28 +14,28 @@ import java.util.Objects;
 public class Columna {
 
     //nombre de la columna
-    String nombre;
+    private String nombre;
     
     //tipo de la columna
-    String tipo;
+    private String tipo;
     
     //tamaño de la columna
-    int tamaño;
+    private int tamaño;
     
     //int que indica si es clave primaria, secundaria/foranea o nada (0=nada, 1=primaria, 2=secundaria)
-    int tipoClave;
+    private int tipoClave;
     
     //campo booleano que indica si la columna es unica o no
-    boolean esUnica;
+    private boolean esUnica;
     
     //campo booleano que indica si la columna tiene o no un indice
-    boolean esIndice;
+    private boolean esIndice;
     
     //campo que indica si hay una columna con el mismo nombre en la otra BD
     boolean presente;
     
     //arreglo de boolean indica las diferencias con respecto a otra columna del mismo nombre
-    boolean dif[];
+    private boolean dif[];
 
     /*
      * Constructor de clase
@@ -105,12 +105,12 @@ public class Columna {
             return false;//exception TODO........
         } else {
             //si el nombre es igual, se compara ambas columnas
-            if (this.nombre.equals(other.nombre)) {
+            if (this.getNombre().equals(other.getNombre())) {
 
                 this.presente = true;
                 other.presente = true;
                 //compara tipo de clave, tipo, tamaño, si son indices o no y si son campos unicos o no
-                if (this.tipoClave != other.tipoClave) {
+                if (this.getTipoClave() != other.getTipoClave()) {
                     difer[1] = false;
                     aux = false;
                 }
@@ -118,15 +118,15 @@ public class Columna {
                     difer[2] = false;
                     aux = false;
                 }
-                if (this.tamaño != other.tamaño) {
+                if (this.getTamaño() != other.getTamaño()) {
                     difer[3] = false;
                     aux = false;
                 }
-                if (this.esUnica != (other.esUnica)) {
+                if (this.isEsUnica() != (other.isEsUnica())) {
                     difer[4] = false;
                     aux = false;
                 }
-                if (this.esIndice != other.esIndice) {
+                if (this.isEsIndice() != other.isEsIndice()) {
                     difer[5] = false;
                     aux = false;
                 }
@@ -144,6 +144,20 @@ public class Columna {
             }
         }
 
+    }
+
+    /**
+     * @return the esUnica
+     */
+    public boolean isEsUnica() {
+        return esUnica;
+    }
+
+    /**
+     * @return the esIndice
+     */
+    public boolean isEsIndice() {
+        return esIndice;
     }
 
 }

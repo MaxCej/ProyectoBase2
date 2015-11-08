@@ -13,14 +13,14 @@ import java.util.Objects;
  */
 public class Parametro {
 
-    String tipo;
+    private String tipo;
     
     /*
      0=in
      1=out
      2=in/out
      */
-    int tipoPasaje;
+    private int tipoPasaje;
     
     //campo que indica si un parametro es identico a otro evaluado, para evitar repetir su evaluacion.
     boolean presente;
@@ -40,13 +40,27 @@ public class Parametro {
         if (!this.tipo.equals(p.tipo)) {
             return false;
         }
-        if (this.tipoPasaje != p.tipoPasaje) {
+        if (this.getTipoPasaje() != p.getTipoPasaje()) {
             return false;
         }
         //si ambos parametros son iguales, se los marca para evitar su evaluacion
         this.presente = true;
         p.presente = true;
         return true;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public String getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @return the tipoPasaje
+     */
+    public int getTipoPasaje() {
+        return tipoPasaje;
     }
 
 }

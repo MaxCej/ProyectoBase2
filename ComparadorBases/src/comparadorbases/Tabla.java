@@ -15,10 +15,10 @@ import java.util.Objects;
 public class Tabla {
 
     //nombre de la tabla
-    String nombre;
+    private String nombre;
 
     //lista de columnas de la tabla
-    LinkedList<Columna> Columnas;
+    private LinkedList<Columna> Columnas;
 
     //campo que indica si una tabla esta presente,se llama igual a otra tabla, en la otra DB
     boolean presente;
@@ -29,12 +29,12 @@ public class Tabla {
      * 1 = columnas del mismo nombre, distintas
      * 2 = la columna no existe en la otra tabla
      */
-    LinkedList<Integer> difColumna;
+    private LinkedList<Integer> difColumna;
 
     /*
      Lista de TODOS los nombres de triggers de la tabla
      */
-    LinkedList<Trigger> triggers;
+    private LinkedList<Trigger> triggers;
 
     //Lista de triggers en que difieren las tablas comparadas
     /*
@@ -42,7 +42,7 @@ public class Tabla {
      * 1 = mismo nombre, distintos
      * 2 = trigger inexistente en la otra base de datos
      */
-    LinkedList<Integer> difTriggers;
+    private LinkedList<Integer> difTriggers;
 
     //Constructor de clase
     public Tabla(String nombre) {
@@ -62,8 +62,8 @@ public class Tabla {
      * columnas
      */
     public void agregarColumna(Columna c) {
-        this.Columnas.addLast(c);
-        this.difColumna.addLast(2);
+        this.getColumnas().addLast(c);
+        this.getDifColumna().addLast(2);
     }
 
     /*
@@ -72,8 +72,8 @@ public class Tabla {
      * triggers
      */
     public void agregarTrigger(Trigger t) {
-        this.triggers.addLast(t);
-        this.difTriggers.addLast(2);
+        this.getTriggers().addLast(t);
+        this.getDifTriggers().addLast(2);
     }
 
     /*
@@ -97,26 +97,26 @@ public class Tabla {
         this.presente = true;
         other.presente = true;
         //si una tablas tiene mas columas que la otra, son distintas
-        if (this.Columnas.size() != other.Columnas.size()) {
+        if (this.getColumnas().size() != other.getColumnas().size()) {
             res = false;
         }
-        for (i = 0; i < this.Columnas.size(); i++) {
-            for (j = 0; j < other.Columnas.size(); j++) {
+        for (i = 0; i < this.getColumnas().size(); i++) {
+            for (j = 0; j < other.getColumnas().size(); j++) {
                 //si la columna de la 2da tabla no estaba presente en la 1era
                 if (!other.Columnas.get(j).presente) {
-                    aux = this.Columnas.get(i).equals(other.Columnas.get(j));
+                    aux = this.getColumnas().get(i).equals(other.getColumnas().get(j));
                     /* si se llaman igual (present == true) 
                      * guardamos el resultado de la comparacion entre ambas
                      */
-                    if (this.Columnas.get(i).presente) {
+                    if (this.getColumnas().get(i).presente) {
                         //seteamos en 0 si se llaman igual y son identicas
                         if (aux) {
-                            this.difColumna.set(i, 0);
-                            other.difColumna.set(j, 0);
+                            this.getDifColumna().set(i, 0);
+                            other.getDifColumna().set(j, 0);
                         } else {
                             //seteamos en 1 si se llaman igual y son diferentes
-                            this.difColumna.set(i, 1);
-                            other.difColumna.set(j, 1);
+                            this.getDifColumna().set(i, 1);
+                            other.getDifColumna().set(j, 1);
                             res = false;
                         }
                         break;
@@ -124,7 +124,7 @@ public class Tabla {
                 }
                 //Si llego al final del ciclo, la i-esima columna de la 1era tabla
                 //no esta en la segunda
-                if (j == other.Columnas.size() - 1) {
+                if (j == other.getColumnas().size() - 1) {
                     res = false;
                 }
             }
@@ -138,38 +138,66 @@ public class Tabla {
      */
     public boolean comparadorTriggers(Tabla other) {
         boolean res = true;
-        if (this.triggers.size() > other.triggers.size()) {
+        if (this.getTriggers().size() > other.getTriggers().size()) {
             res = false;
         }
 
-        for (int i = 0; i < this.triggers.size(); i++) {
-            for (int j = 0; j < other.triggers.size(); j++) {
-                System.out.println("compara: " + this.triggers.get(i).nombre + " con " + other.triggers.get(j).nombre);
+        for (int i = 0; i < this.getTriggers().size(); i++) {
+            for (int j = 0; j < other.getTriggers().size(); j++) {
+                System.out.println("compara: " + this.getTriggers().get(i).nombre + " con " + other.getTriggers().get(j).nombre);
                 //si los triggers tienen el mismo nombre
-                if (this.triggers.get(i).nombre.equals(other.triggers.get(j).nombre)) {
+                if (this.getTriggers().get(i).nombre.equals(other.getTriggers().get(j).nombre)) {
                     System.out.println("mismo nombre");
                     //comparamos su estructura
-                    boolean resParcial = (this.triggers.get(i).equals(other.triggers.get(j)));
+                    boolean resParcial = (this.getTriggers().get(i).equals(other.getTriggers().get(j)));
                     System.out.println("resparcial: " + resParcial);
                     if (resParcial) {
                         //tienen el mismo nombre y estructura
-                        this.difTriggers.set(i, 0);
-                        other.difTriggers.set(j, 0);
+                        this.getDifTriggers().set(i, 0);
+                        other.getDifTriggers().set(j, 0);
                     } else {
                         //tienen el mismo nombre pero difieren en su estructura
-                        this.difTriggers.set(i, 1);
-                        other.difTriggers.set(j, 1);
+                        this.getDifTriggers().set(i, 1);
+                        other.getDifTriggers().set(j, 1);
                         res = false;
                     }
                     break;
                 }
 
-                if (j == other.triggers.size() - 1) {
+                if (j == other.getTriggers().size() - 1) {
                     res = false;
                 }
             }
         }
         return res;
+    }
+
+    /**
+     * @return the nombre
+     */
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     * @return the difColumna
+     */
+    public LinkedList<Integer> getDifColumna() {
+        return difColumna;
+    }
+
+    /**
+     * @return the triggers
+     */
+    public LinkedList<Trigger> getTriggers() {
+        return triggers;
+    }
+
+    /**
+     * @return the difTriggers
+     */
+    public LinkedList<Integer> getDifTriggers() {
+        return difTriggers;
     }
 
 }
