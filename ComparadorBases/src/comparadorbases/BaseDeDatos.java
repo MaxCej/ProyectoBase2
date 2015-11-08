@@ -59,6 +59,10 @@ public class BaseDeDatos {
         this.triggers.addLast(t);
         this.difTriggers.addLast(2);
     }
+    
+    public void agregarProcedimiento(Procedimiento p){
+        // TODO
+    }
 
     public boolean equals(BaseDeDatos bd2) {
         int i, j;
