@@ -15,8 +15,10 @@ public class BaseDeDatos {
 
     //nombre de la BD
     String nombreBase;
+
     //lista de tablas de la BD
     LinkedList<Tabla> tablas;
+
     /*LinkedList de enteros que indican las diferencias entre tablas con un mismo nombre
      * Comparacion de columnas de tablas, 
      * 0 = columnas del mismo nombre, identicas
@@ -24,25 +26,12 @@ public class BaseDeDatos {
      * 2 = la columna no existe en la otra tabla
      */
     LinkedList<Integer> dif;
-    /*
-     Lista de TODOS los nombres de triggers de la base de datos
-     */
-    LinkedList<Trigger> triggers;
-    //Lista de triggers en que difieren las bases comparadas
-    /*
-     * 0 = mismo nombre, identicos
-     * 1 = mismo nombre, distintos
-     * 2 = trigger inexistente en la otra base de datos
-     */
-    LinkedList<Integer> difTriggers;
 
     //constructor de clase
     public BaseDeDatos(String nombreBase) {
         this.nombreBase = nombreBase;
         this.tablas = new LinkedList();
         this.dif = new LinkedList();
-        this.triggers = new LinkedList();
-        this.difTriggers = new LinkedList();
     }
 
     /*
@@ -55,12 +44,7 @@ public class BaseDeDatos {
         this.dif.addLast(2);
     }
 
-    public void agregarTrigger(Trigger t) {
-        this.triggers.addLast(t);
-        this.difTriggers.addLast(2);
-    }
-    
-    public void agregarProcedimiento(Procedimiento p){
+    public void agregarProcedimiento(Procedimiento p) {
         // TODO
     }
 
@@ -102,47 +86,4 @@ public class BaseDeDatos {
         }
         return res;
     }
-
-    /*Metodo que dadas dos bases de datos retorna true si
-     la lista de triggers de la 1er base esta incluida
-     en la lista de triggers de la 2da y en caso de haber
-     triggers de la 1er BD que no esten en la 2da, se guardan en una lista
-     dentro de la 1er BD
-     */
-    public boolean comparadorTriggers(BaseDeDatos other) {
-        boolean res = true;
-        if (this.triggers.size() > other.triggers.size()) {
-            res = false;
-        }
-
-        for (int i = 0; i < this.triggers.size(); i++) {
-            for (int j = 0; j < other.triggers.size(); j++) {
-                System.out.println("compara: " + this.triggers.get(i).nombre + " con " + other.triggers.get(j).nombre);
-                //si los triggers tienen el mismo nombre
-                if (this.triggers.get(i).nombre.equals(other.triggers.get(j).nombre)) {
-                    System.out.println("mismo nombre");
-                    //comparamos su estructura
-                    boolean resParcial = (this.triggers.get(i).equals(other.triggers.get(j)));
-                    System.out.println("resparcial: " + resParcial);
-                    if (resParcial) {
-                        //tienen el mismo nombre y estructura
-                        this.difTriggers.set(i, 0);
-                        other.difTriggers.set(j, 0);
-                    }else{
-                        //tienen el mismo nombre pero difieren en su estructura
-                        this.difTriggers.set(i, 1);
-                        other.difTriggers.set(j, 1);
-                        res=false;
-                    }
-                    break;
-                }
-
-                if (j == other.triggers.size()-1) {
-                    res = false;
-                }
-            }
-        }
-        return res;
-    }
-
 }

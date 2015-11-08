@@ -13,24 +13,22 @@ import java.util.Objects;
  */
 public class Trigger {
 
+    //campo que indica el nombre del trigger
     String nombre;
-    //0=before
-    //1=after
-    int disparo;
-    //0=insert
-    //1=update
-    //2=delete
-    int condicion;
-    //tabla en que se trabaja
-    String tabla;
+
+    //campo que indica el tiempo del disparo
+    String disparo;
+
+    //campo que indica la condicion
+    String condicion;
+
     //campo que indica que un trigger es identico a otro 
     boolean presente;
 
-    public Trigger(String nombre, int cond, int disp, String tabla) {
+    public Trigger(String nombre, String cond, String disp) {
         this.nombre = nombre;
         this.condicion = cond;
         this.disparo = disp;
-        this.tabla = tabla;
         this.presente = false;
     }
 
@@ -41,14 +39,10 @@ public class Trigger {
         if (other == null) {
             return false;
         }
-        
-        if (this.disparo != other.disparo) {
+        if (!Objects.equals(this.disparo, other.disparo)) {
             return false;
         }
-        if (this.condicion != other.condicion) {
-            return false;
-        }
-        if (!Objects.equals(this.tabla, other.tabla)) {
+        if (!Objects.equals(this.condicion, other.condicion)) {
             return false;
         }
         this.presente = true;

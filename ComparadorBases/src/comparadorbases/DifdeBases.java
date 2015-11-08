@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package comparadorbases;
 
 /**
@@ -11,6 +10,7 @@ package comparadorbases;
  * @author fede
  */
 public class DifdeBases {
+
     BaseDeDatos bd1;
     BaseDeDatos bd2;
 }

@@ -24,7 +24,6 @@ public class ComparadorBases {
      * @throws java.sql.SQLException
      */
     public static void main(String[] args) { //throws SQLException{
-//201,186,82
         String base1, base2;
         try {
             //conn1
@@ -122,23 +121,27 @@ public class ComparadorBases {
                     Columna columna = new Columna(resultSetColumna.getString(4), clave, resultSetColumna.getString(6), resultSetColumna.getInt(7), esUnico, tieneIndice);
                     tabla.agregarColumna(columna);
                 }
-                
+
                 //
                 // FALTA OBTENER INFORMACION DE TRIGGERS
                 //
                 //
                 /*obtener triggers*/
                 Statement statement = c.createStatement();
-                resultSetTrigger = statement.executeQuery("select trigger_name from user_triggers where table_name='" + resultSetTabla.getString(3) + "'");
+                resultSetTrigger = statement.executeQuery(
+                        "SELECT trigger_name, event_object_table,action_timing,event_manipulation\n"
+                        + " FROM information_schema.triggers\n"
+                        + " WHERE trigger_schema NOT IN\n"
+                        + " ('pg_catalog', 'information_schema') and event_object_table='"
+                        + resultSetTabla.getString(3) + "'");
 
                 while (resultSetTrigger.next()) {
-                    Trigger trigger = new Trigger(resultSetTrigger.getString(1));
+                    Trigger trigger = new Trigger(resultSetTrigger.getString(1), resultSetTrigger.getString(3), resultSetTrigger.getString(4));
                     tabla.agregarTrigger(trigger);
-
                 }
                 db.agregarTabla(tabla);
             }
-            
+
             // obtenemos los procedimientos
             resultSetProcedimiento = metaData.getProcedures(null, schema, "%");
             while (resultSetProcedimiento.next()) {

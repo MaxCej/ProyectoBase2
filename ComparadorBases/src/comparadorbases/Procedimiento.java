@@ -15,12 +15,15 @@ public class Procedimiento {
 
     //nombre del procedimiento
     String nombre;
+    
     //lista de parametros del procedimiento
     LinkedList<Parametro> param;
+    
     //lista de diferencias con procedimiento del mismo nombre, en cuanto a parametros
     //0= igualdad de nombre, igualdad de tipo 
     //1= unico del procedimiento
     LinkedList<Integer> dif;
+    
     //campo que indica si un procedimiento esta presente,se llama igual a otro procedimeinto, en la otra DB
     boolean presente;
 
