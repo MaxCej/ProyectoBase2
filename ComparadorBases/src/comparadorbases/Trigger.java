@@ -32,6 +32,18 @@ public class Trigger {
         this.presente = false;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDisparo() {
+        return disparo;
+    }
+
+    public String getCondicion() {
+        return condicion;
+    }
+
     //Precond: los triggers tienen el mismo nombre
     //metodo que dados dos triggers devuelve true si son totalmente iguales
     // y los marca para evitar ser evaluados de nuevo

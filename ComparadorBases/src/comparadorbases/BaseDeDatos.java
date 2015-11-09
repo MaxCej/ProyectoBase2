@@ -25,15 +25,19 @@ public class BaseDeDatos {
      * 1 = columnas del mismo nombre, distintas
      * 2 = la columna no existe en la otra tabla
      */
-    private LinkedList<Integer> dif;
+    private LinkedList<Integer> difTablas;
+    
+    private LinkedList<Procedimiento> procedimientos;
 
     //constructor de clase
     public BaseDeDatos(String nombreBase) {
         this.nombreBase = nombreBase;
         this.tablas = new LinkedList();
-        this.dif = new LinkedList();
+        this.difTablas = new LinkedList();
+        this.procedimientos = new LinkedList();
     }
 
+    
     /*
      * cada vez que se agrega una tabla, se agrega
      * un integer "2" en la lista que indica diferencias entre
@@ -41,12 +45,14 @@ public class BaseDeDatos {
      */
     public void agregarTabla(Tabla t) {
         this.getTablas().addLast(t);
-        this.getDif().addLast(2);
+        this.getDifTablas().addLast(2);
     }
 
     public void agregarProcedimiento(Procedimiento p) {
-        // TODO
+        this.procedimientos.addLast(p);
     }
+    
+    
 
     public boolean equals(BaseDeDatos bd2) {
         int i, j;
@@ -67,12 +73,12 @@ public class BaseDeDatos {
                     aux = this.getTablas().get(i).compararTablas(bd2.getTablas().get(j));
                     //seteamos en 0 si se llaman igual y son identicas
                     if (aux) {
-                        this.getDif().set(i, 0);
-                        bd2.getDif().set(j, 0);
+                        this.getDifTablas().set(i, 0);
+                        bd2.getDifTablas().set(j, 0);
                     } else {
                         //seteamos en 1 si se llaman igual y son diferentes
-                        this.getDif().set(i, 1);
-                        bd2.getDif().set(j, 1);
+                        this.getDifTablas().set(i, 1);
+                        bd2.getDifTablas().set(j, 1);
                         res = false;
                     }
                     break;
@@ -101,10 +107,14 @@ public class BaseDeDatos {
         return tablas;
     }
 
+    public LinkedList<Procedimiento> getProcedimientos() {
+        return procedimientos;
+    }
+    
     /**
      * @return the dif
      */
-    public LinkedList<Integer> getDif() {
-        return dif;
+    public LinkedList<Integer> getDifTablas() {
+        return difTablas;
     }
 }

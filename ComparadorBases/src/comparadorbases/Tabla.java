@@ -49,6 +49,8 @@ public class Tabla {
         this.nombre = nombre;
         this.Columnas = new LinkedList();
         this.difColumna = new LinkedList();
+        this.triggers = new LinkedList();
+        this.difTriggers = new LinkedList();
         this.presente = false;
     }
 
@@ -144,13 +146,12 @@ public class Tabla {
 
         for (int i = 0; i < this.getTriggers().size(); i++) {
             for (int j = 0; j < other.getTriggers().size(); j++) {
-                System.out.println("compara: " + this.getTriggers().get(i).nombre + " con " + other.getTriggers().get(j).nombre);
                 //si los triggers tienen el mismo nombre
                 if (this.getTriggers().get(i).nombre.equals(other.getTriggers().get(j).nombre)) {
-                    System.out.println("mismo nombre");
+                   
                     //comparamos su estructura
                     boolean resParcial = (this.getTriggers().get(i).equals(other.getTriggers().get(j)));
-                    System.out.println("resparcial: " + resParcial);
+                   
                     if (resParcial) {
                         //tienen el mismo nombre y estructura
                         this.getDifTriggers().set(i, 0);

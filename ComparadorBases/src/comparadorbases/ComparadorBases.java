@@ -27,35 +27,31 @@ public class ComparadorBases {
         try {
             //conn1
             Connection conn1;
-            base1 = "root"; //setear nombres de las bases de datos
+            base1 = "ejbPract1"; //setear nombres de las bases de datos
             String url1 = "jdbc:postgresql://localhost:5432/" + base1;
 
             //conn2
             Connection conn2;
-            base2 = "postgres";
+            base2 = "ejcPract1";
             String url2 = "jdbc:postgresql://localhost:5432/" + base2;
 
-            String user = "root";
+            String user = "postgres";
             String pass = "root";
             String driver = "org.postgresql.Driver";
             Class.forName(driver);
 
             conn1 = DriverManager.getConnection(url1, user, pass);
-            //conn2 = DriverManager.getConnection(url2, user, pass);
+            conn2 = DriverManager.getConnection(url2, user, pass);
 
-            DatabaseMetaData meta = conn1.getMetaData();
+            BaseDeDatos db1 = new BaseDeDatos(base1);
+            ObtenerDatos(db1, conn1, "public");
 
-            ResultSet rs = meta.getCatalogs();
-            ResultSet rs2 = meta.getSchemas();
+            BaseDeDatos db2 = new BaseDeDatos(base2);
+            ObtenerDatos(db2, conn2, "public");
 
-            while (rs2.next()) {
-                String schema = rs2.getString(1);  //"TABLE_CATALOG"
-                System.out.println("schema: " + schema);
-            }
-            while (rs.next()) {
-                String catalog = rs.getString(1);  //"TABLE_CATALOG"
-                System.out.println("catalog: " + catalog);
-            }
+            System.out.println("Son iguales las 2 bases?: "+ db1.equals(db2));
+            MostrarEstructura(db1);
+            MostrarEstructura(db2);
             //Opciones(connection);
         } catch (Exception sqle) {
             sqle.printStackTrace();
@@ -147,7 +143,7 @@ public class ComparadorBases {
                 Procedimiento procedure = new Procedimiento(resultSetProcedimiento.getString(3));
                 resultSetParametro = metaData.getProcedureColumns(null, schema, resultSetProcedimiento.getString(3), "%");
                 while (resultSetParametro.next()) {
-                    Parametro parametro = new Parametro(resultSetParametro.getString(7), resultSetParametro.getInt(5));
+                    Parametro parametro = new Parametro(resultSetParametro.getString(4), resultSetParametro.getString(7), resultSetParametro.getInt(5));
                     procedure.agregarParametro(parametro);
                 }
                 db.agregarProcedimiento(procedure);// TODO METODO
@@ -157,6 +153,46 @@ public class ComparadorBases {
             System.out.println("Ocurrio un error SQL2");
         }
         return true;
+    }
+
+    public static void MostrarEstructura(BaseDeDatos db) {
+        System.out.println("Nombre de BD: " + db.getNombreBase() + "\n");
+        for (Tabla t : db.getTablas()) {
+            System.out.println("Nombre de tabla: " + t.getNombre());
+            System.out.println("Columnas: ");
+            for (Columna c : t.getColumnas()) {
+                System.out.println(c.getNombre() + ", " + c.getTamaño() + ", " + c.getTipo() + ", " + c.getTipoClave());
+                boolean pres = c.isPresente();
+                System.out.println("Esta presente en la otra tabla?: " + pres);
+                if (pres) {
+                    boolean dif = c.getDif() != null;
+                    System.out.println("tiene diferencias?: " + dif);
+                    if (dif) {
+                        for (boolean b : c.getDif()) {
+                            System.out.print(b + " ");
+                        }
+                    }
+
+                }
+                System.out.println("");
+            }
+            System.out.println("Triggers: ");
+            for (Trigger tg : t.getTriggers()) {
+                System.out.println(tg.getNombre() + ", " + tg.getCondicion() + ", " + tg.getDisparo());
+            }
+            System.out.println("------------------------------------------- ");
+        }
+        System.out.println("Procedimientos\n");
+        for (Procedimiento p : db.getProcedimientos()) {
+            System.out.println("Nombre Procedimiento:" + p.getNombre()+"\n");
+            for (Parametro pa : p.getParam()) {
+                System.out.println("nombre:" + pa.getNombre() + " pasaje: " + pa.getTipoPasaje() + ", tipo: " + pa.getTipo());
+            }
+            System.out.println("------------------------------------------- ");
+            System.out.println("");
+        }
+        System.out.println("------------------------------------------- ");
+
     }
 }
 //        boolean res;

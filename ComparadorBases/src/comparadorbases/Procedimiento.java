@@ -26,7 +26,7 @@ public class Procedimiento {
     
     //campo que indica si un procedimiento esta presente,se llama igual a otro procedimeinto, en la otra DB
     boolean presente;
-
+    
     //constructor de clase
     public Procedimiento(String nombreProc) {
         this.nombre = nombreProc;

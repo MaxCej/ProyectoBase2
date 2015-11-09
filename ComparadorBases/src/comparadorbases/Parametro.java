@@ -24,12 +24,16 @@ public class Parametro {
     
     //campo que indica si un parametro es identico a otro evaluado, para evitar repetir su evaluacion.
     boolean presente;
-
+    
+    //auxiliar testing
+    private String nombre;
+    
     //Constructor de clase
-    public Parametro(String tipo, int tipoPasaje) {
+    public Parametro(String nombre, String tipo, int tipoPasaje) {
         this.tipo = tipo;
         this.tipoPasaje = tipoPasaje;
         this.presente = false;
+        this.nombre = nombre;
     }
 
     public boolean equals(Parametro p) {
@@ -61,6 +65,13 @@ public class Parametro {
      */
     public int getTipoPasaje() {
         return tipoPasaje;
+    }
+
+    /**
+     * @return the nombre
+     */
+    public String getNombre() {
+        return nombre;
     }
 
 }
