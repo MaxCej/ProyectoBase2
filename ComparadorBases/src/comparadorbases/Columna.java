@@ -15,27 +15,27 @@ public class Columna {
 
     //nombre de la columna
     private String nombre;
-    
+
     //tipo de la columna
     private String tipo;
-    
+
     //tamaño de la columna
     private int tamaño;
-    
+
     //int que indica si es clave primaria, secundaria/foranea o nada (0=nada, 1=primaria, 2=secundaria)
     private int tipoClave;
-    
+
     //campo booleano que indica si la columna es unica o no
     private boolean esUnica;
-    
+
     //campo booleano que indica si la columna tiene o no un indice
     private boolean esIndice;
-    
+
     //campo que indica si hay una columna con el mismo nombre en la otra BD
     boolean presente;
-    
+
     //arreglo de boolean indica las diferencias con respecto a otra columna del mismo nombre
-    private boolean dif[];
+    public boolean dif[];
 
     /*
      * Constructor de clase
@@ -48,7 +48,7 @@ public class Columna {
         this.esUnica = esUnica;
         this.esIndice = esIndice;
         this.presente = false;
-        dif = null;
+        this.dif = new boolean[6];
     }
 
     public int getTamaño() {
@@ -90,7 +90,7 @@ public class Columna {
     public boolean[] getDif() {
         return dif;
     }
-    
+
     /* metodo que dadas dos columnas devuelve
      * un boolean que indica si difieren las columnas
      * y si difieren, guarda un arreglo de bool con sus diferencias
@@ -106,7 +106,6 @@ public class Columna {
         } else {
             //si el nombre es igual, se compara ambas columnas
             if (this.getNombre().equals(other.getNombre())) {
-
                 this.presente = true;
                 other.presente = true;
                 //compara tipo de clave, tipo, tamaño, si son indices o no y si son campos unicos o no
@@ -122,22 +121,19 @@ public class Columna {
                     difer[3] = false;
                     aux = false;
                 }
-                if (this.isEsUnica() != (other.isEsUnica())) {
+                if (this.esUnica() != (other.esUnica())) {
                     difer[4] = false;
                     aux = false;
                 }
-                if (this.isEsIndice() != other.isEsIndice()) {
+                if (this.esIndice() != other.esIndice()) {
                     difer[5] = false;
                     aux = false;
                 }
-                //en caso de haberse encontrado alguna diferencia se guarda difer en ambas columnas
-                if (!aux) {
-                    this.dif = difer;
-                    other.dif = difer;
-                    return false;
-                }
-                //caso contrario, no se hace nada y ambos dif (de ambas columnas) quedan en null
-                return true;
+                //actualizamos el arreglo dif
+                this.dif = difer;
+                other.dif = difer;
+                //retornamos el valor de aux, que en caso de haber diferencia es false, sino, es true
+                return aux;
 
             } else {
                 return false;
@@ -146,18 +142,56 @@ public class Columna {
 
     }
 
-    /**
-     * @return the esUnica
-     */
-    public boolean isEsUnica() {
+    //retorna true si la columna es totalmente igual a otra
+    private boolean recorridoDif() {
+        boolean res = true;
+        for (boolean b : this.getDif()) {
+            res = res && b;
+        }
+        return res;
+    }
+
+    public boolean esUnica() {
         return esUnica;
     }
 
-    /**
-     * @return the esIndice
-     */
-    public boolean isEsIndice() {
+    public boolean esIndice() {
         return esIndice;
     }
 
+    public void mostrarDiferenciasColumna() {
+        //recorremos el arreglo dif que contiene las diferencias entre columnas del mismo nombre
+        //siempre que se haya encontrado alguna diferencia entre ellas
+        if (this.recorridoDif()) {
+            System.out.println("        las columnas de nombre " + this.getNombre() + " son identicas en ambas tablas de las bases de datos");
+        } else {
+            System.out.println("        las columnas de nombre " + this.getNombre() + " difieren ");
+            for (int i = 0; i < this.dif.length; i++) {
+                //si el arreglo en la posicion corriente presenta una diferencia (es false)
+                if (!this.dif[i]) {
+                    switch (i) {
+                        case 0:
+                            System.out.println("            en nombre: " + this.getNombre());
+                            break;
+                        case 1:
+                            System.out.println("            en tipo de clave: " + this.getTipoClave());
+                            break;
+                        case 2:
+                            System.out.println("            en tipo de campo: " + this.getTipo());
+                            break;
+                        case 3:
+                            System.out.println("            en tamaño: " + this.getTamaño());
+                            break;
+                        case 4:
+                            System.out.println("            en si el campo es unico o no: " + this.esUnica());
+                            break;
+                        case 5:
+                            System.out.println("            en si el campo es indice o no: " + this.esIndice());
+                            break;
+                    }
+                }
+            }
+        }
+
+    }
 }

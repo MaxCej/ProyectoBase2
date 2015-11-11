@@ -49,9 +49,14 @@ public class ComparadorBases {
             BaseDeDatos db2 = new BaseDeDatos(base2);
             ObtenerDatos(db2, conn2, "public");
 
-            System.out.println("Son iguales las 2 bases?: "+ db1.equals(db2));
+            System.out.println("Son iguales las 2 bases?: " + db1.equals(db2));
             MostrarEstructura(db1);
             MostrarEstructura(db2);
+            System.out.println("diferencias "+base1+" con respecto a "+base2+" : ");
+            mostrarDiferenciasBases(db1);
+            System.out.println("\n--------------------------------------------\n");
+            System.out.println("diferencias "+base2+" con respecto a "+base1+" : ");
+            mostrarDiferenciasBases(db2);
             //Opciones(connection);
         } catch (Exception sqle) {
             sqle.printStackTrace();
@@ -156,170 +161,59 @@ public class ComparadorBases {
     }
 
     public static void MostrarEstructura(BaseDeDatos db) {
+        System.out.println("ESTRUCTURA DE BASES DE DATOS: \n\n");
         System.out.println("Nombre de BD: " + db.getNombreBase() + "\n");
         for (Tabla t : db.getTablas()) {
+            System.out.println("---------------------------------------");
             System.out.println("Nombre de tabla: " + t.getNombre());
             System.out.println("Columnas: ");
             for (Columna c : t.getColumnas()) {
-                System.out.println(c.getNombre() + ", " + c.getTamaño() + ", " + c.getTipo() + ", " + c.getTipoClave());
+                System.out.println("nombre col: " + c.getNombre() + ", tamaño: " + c.getTamaño() + ", tipo: " + c.getTipo() + ",tipo clave: " + c.getTipoClave());
                 boolean pres = c.isPresente();
                 System.out.println("Esta presente en la otra tabla?: " + pres);
-                if (pres) {
-                    boolean dif = c.getDif() != null;
-                    System.out.println("tiene diferencias?: " + dif);
-                    if (dif) {
-                        for (boolean b : c.getDif()) {
-                            System.out.print(b + " ");
-                        }
-                    }
+                
+                boolean dif = c.getDif() != null;
 
-                }
+                System.out.println("dif nombre: "+c.getDif()[0]);
+                System.out.println("dif tipoClave: "+c.getDif()[1]);
+                System.out.println("dif tipo: "+c.getDif()[2]);
+                System.out.println("dif tamaño: "+c.getDif()[3]);
+                System.out.println("dif esUnica: "+c.getDif()[4]);
+                System.out.println("dif esIndice: "+c.getDif()[5]);
+                
                 System.out.println("");
             }
-            System.out.println("Triggers: ");
-            for (Trigger tg : t.getTriggers()) {
-                System.out.println(tg.getNombre() + ", " + tg.getCondicion() + ", " + tg.getDisparo());
+            if (!t.getTriggers().isEmpty()) {
+                System.out.println("Triggers: ");
+                for (int i = 0; i < t.getTriggers().size(); i++) {
+                    Trigger tg = t.getTriggers().get(i);
+                    System.out.println(tg.getNombre() + ", " + tg.getCondicion() + ", " + tg.getDisparo());
+                    int diftg = t.getDifTriggers().get(i);
+                    System.out.println("presente: " + diftg);
+                }
+                System.out.println("------------------------------------------- ");
+            }
+
+        }
+        if (!db.getProcedimientos().isEmpty()) {
+            System.out.println("Procedimientos\n");
+            for (Procedimiento p : db.getProcedimientos()) {
+                System.out.println("Nombre Procedimiento:" + p.getNombre() + "\n");
+                for (Parametro pa : p.getParam()) {
+                    System.out.println("nombre:" + pa.getNombre() + " pasaje: " + pa.getTipoPasaje() + ", tipo: " + pa.getTipo());
+                }
+                System.out.println("------------------------------------------- ");
+                System.out.println("");
             }
             System.out.println("------------------------------------------- ");
         }
-        System.out.println("Procedimientos\n");
-        for (Procedimiento p : db.getProcedimientos()) {
-            System.out.println("Nombre Procedimiento:" + p.getNombre()+"\n");
-            for (Parametro pa : p.getParam()) {
-                System.out.println("nombre:" + pa.getNombre() + " pasaje: " + pa.getTipoPasaje() + ", tipo: " + pa.getTipo());
-            }
-            System.out.println("------------------------------------------- ");
-            System.out.println("");
-        }
-        System.out.println("------------------------------------------- ");
 
     }
+        
+    public static void mostrarDiferenciasBases(BaseDeDatos db){
+        for(Tabla t: db.getTablas()){
+            t.mostrarDiferenciasTabla();
+        }
+    }
 }
-//        boolean res;
-//        Columna c1 = new Columna("c1", 0, "varchar", 40, true, false);
-//        Columna c2 = new Columna("c1", 0, "varchar", 40, true, false);
-//        Columna c3 = new Columna("c2", 0, "varchar", 40, true, false);
-//        Columna c4 = new Columna("c2", 0, "varchar", 40, true, false);
-//        Columna c5 = new Columna("c4", 0, "varchar", 40, true, false);
-//        Columna c6 = new Columna("c4", 0, "varchar", 40, true, false);
-//        Columna c7 = new Columna("c4", 1, "varchar", 40, true, false);
-//        Tabla t1 = new Tabla("juan");
-//        t1.agregarColumna(c1);
-//        t1.agregarColumna(c3);
-//        t1.agregarColumna(c5);
-//        Tabla t2 = new Tabla("pepe");
-//        t2.agregarColumna(c2);
-//        t2.agregarColumna(c4);
-//        t2.agregarColumna(c6);
-//        Tabla t3 = new Tabla("juan");
-//        t3.agregarColumna(c1);
-//        t3.agregarColumna(c3);
-//        t3.agregarColumna(c5);
-//        Tabla t4 = new Tabla("pepe");
-//        t4.agregarColumna(c2);
-//        t4.agregarColumna(c4);
-//        t4.agregarColumna(c7);
-//        //res = t1.compararTablas(t2);
-//
-//        BaseDeDatos bd1 = new BaseDeDatos("base1");
-//        bd1.agregarTabla(t1);
-//        bd1.agregarTabla(t2);
-//        BaseDeDatos bd2 = new BaseDeDatos("base2");
-//        bd2.agregarTabla(t3);
-//        bd2.agregarTabla(t4);
-//        res = bd1.equals(bd2);
-//
-//        System.out.println("bases iguales?: " + res + "\n-------------------------");
-//        for (int i = 0; i < bd1.tablas.size(); i++) {
-//            System.out.println(bd1.tablas.get(i).nombre);
-//            System.out.println(bd1.dif.get(i));
-//        }
-//        System.out.println("---------------------");
-//
-//        for (int i = 0; i < bd2.tablas.size(); i++) {
-//            System.out.println(bd2.tablas.get(i).nombre);
-//            System.out.println(bd2.dif.get(i));
-//        }
-//        System.out.println("---------------------");
-//TEST DE COLUMNAS
-        /*
- res = c1.equals(c2);
- System.out.println(res);
- System.out.println("-------------------------");
- if (c1.getDif()!=null){
- for (int i = 0; i < c1.dif.length; i++) {
- System.out.println(c1.dif[i]);
- }
- System.out.println("-------------------------");
- for (int i = 0; i < c2.dif.length; i++) {
- System.out.println(c2.dif[i]);
- }
- }else{
- if(!res){
- System.out.println("tienen distinto nombre. puto en el ocho");
- }else{
- System.out.println("son iguales. puto en el ocho");
- }
-             
- }
- */
-    // PRUEBA COMPARADOR TRIGGERS
-//        BaseDeDatos bd1 = new BaseDeDatos("base1");
-//        Trigger t1 = new Trigger("t1", 0, 0, "tabla1");
-//        Trigger t2 = new Trigger("t1", 0, 0, "tabla1");
-//        Trigger t3 = new Trigger("t2", 1, 0, "tabla1");
-//        bd1.agregarTrigger(t1);
-//        BaseDeDatos bd2 = new BaseDeDatos("base2");
-//        bd2.agregarTrigger(t2);
-//        bd2.agregarTrigger(t3);
-//        boolean res = bd2.comparadorTriggers(bd1);
-//        System.out.println("");
-//        System.out.println("mismos triggers?: " + res + "\n-------------------------");
-//        if (bd1.difTriggers != null) {
-//            for (int i = 0; i < bd1.difTriggers.size(); i++) {
-//                System.out.println(bd1.difTriggers.get(i));
-//            }
-//            System.out.println("-------------------------");
-//            for (int i = 0; i < bd2.difTriggers.size(); i++) {
-//                System.out.println(bd2.difTriggers.get(i));
-//            }
-//            System.out.println("---------------------");
-//
-//        }
-//        System.out.println("---------------------");
 
-
-/* PRUEBA PROCEDIMIENTOS
- BaseDeDatos bd1 = new BaseDeDatos("base1");
- BaseDeDatos bd2 = new BaseDeDatos("base2");
-
- Procedimiento p1 = new Procedimiento("nombre1");
- Parametro param1 = new Parametro("param1", 1);
- Parametro param4 = new Parametro("param3", 1);
- Parametro param5 = new Parametro("param5", 1);
- p1.agregarParametro(param1);
- p1.agregarParametro(param4);
-
- Procedimiento p2 = new Procedimiento("nombre1");
- Parametro param2 = new Parametro("param1", 1);
- Parametro param3 = new Parametro("param2", 1);
- p2.agregarParametro(param5);
- p2.agregarParametro(param2);
- p2.agregarParametro(param3);
-
- boolean res = p1.compararProcedimientos(p2);
- System.out.println(res);
- System.out.println("");
- System.out.println("parametros iguales?: " + res + "\n-------------------------");
- if (p1.dif != null) {
- for (int i = 0; i < p1.dif.size(); i++) {
- System.out.println(p1.dif.get(i));
- }
- System.out.println("-------------------------");
- for (int i = 0; i < p2.dif.size(); i++) {
- System.out.println(p2.dif.get(i));
- }
- System.out.println("---------------------");
-
- }
- */

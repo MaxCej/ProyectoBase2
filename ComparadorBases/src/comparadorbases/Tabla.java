@@ -140,6 +140,7 @@ public class Tabla {
      */
     public boolean comparadorTriggers(Tabla other) {
         boolean res = true;
+        boolean aux;
         if (this.getTriggers().size() > other.getTriggers().size()) {
             res = false;
         }
@@ -148,21 +149,31 @@ public class Tabla {
             for (int j = 0; j < other.getTriggers().size(); j++) {
                 //si los triggers tienen el mismo nombre
                 if (this.getTriggers().get(i).nombre.equals(other.getTriggers().get(j).nombre)) {
-                   
-                    //comparamos su estructura
-                    boolean resParcial = (this.getTriggers().get(i).equals(other.getTriggers().get(j)));
-                   
-                    if (resParcial) {
-                        //tienen el mismo nombre y estructura
-                        this.getDifTriggers().set(i, 0);
-                        other.getDifTriggers().set(j, 0);
-                    } else {
-                        //tienen el mismo nombre pero difieren en su estructura
-                        this.getDifTriggers().set(i, 1);
-                        other.getDifTriggers().set(j, 1);
-                        res = false;
+                    //si el trigger de la 2da tabla no fue evaluado aun
+                    if (!other.triggers.get(j).presente) {
+                        //comparamos la estructura de ambos trigger
+                        aux = (this.getTriggers().get(i).equals(other.getTriggers().get(j)));
+                        //si se marco como presente al primero
+                        if (this.getTriggers().get(i).presente) {
+                            System.out.println("entro");
+                            if (aux) {
+                                System.out.println("if");
+                                //tienen el mismo nombre y estructura
+                                this.getDifTriggers().set(i, 0);
+                                other.getDifTriggers().set(j, 0);
+                            } else {
+                                System.out.println("else");
+                                //tienen el mismo nombre pero difieren en su estructura
+                                this.getDifTriggers().set(i, 1);
+                                other.getDifTriggers().set(j, 1);
+                                res = false;
+                            }
+                            System.out.println("sale");
+                            break;
+                        }
+
                     }
-                    break;
+
                 }
 
                 if (j == other.getTriggers().size() - 1) {
@@ -199,6 +210,40 @@ public class Tabla {
      */
     public LinkedList<Integer> getDifTriggers() {
         return difTriggers;
+    }
+
+    /*
+     * metodo que muestra por pantalla informacion sobre las diferencias entre las tablas de dos BD
+     */
+    public void mostrarDiferenciasTabla() {
+        if (!this.presente) {
+            System.out.println("    la tabla " + this.getNombre() + " es unica de la base de datos");
+        } else {
+            System.out.println("    la tabla " + this.getNombre() + " comparte nombre con otra tabla de la otra base de datos");
+            //recorremos la lista dif que contiene las diferencias de columnas entre tablas del mismo nombre
+            for (int i = 0; i < this.difColumna.size(); i++) {
+                //si la i-esima columna comparte nombre con otra columna en la otra base de datos
+                Columna colActual = this.getColumnas().get(i);
+                if (colActual.isPresente()) {
+                    colActual.mostrarDiferenciasColumna();
+                } else {
+                    System.out.println("        la columna " + colActual.getNombre() + " es unica de la tabla " + this.getNombre());
+                }
+            }
+
+        }
+        if (this.getTriggers().size() != 0) {
+            for (int i = 0; i < this.difTriggers.size(); i++) {
+                Trigger triggerActual = this.getTriggers().get(i);
+                //si el trigger actual tiene el mismo nombre que un trigger en la otra BD
+                if (triggerActual.isPresente()) {
+                    triggerActual.mostrarDiferenciasTrigger();
+                } else {
+                    System.out.println("        el trigger " + triggerActual.getNombre() + " es unico de la tabla " + this.getNombre());
+                }
+            }
+        }
+
     }
 
 }

@@ -56,7 +56,7 @@ public class BaseDeDatos {
 
     public boolean equals(BaseDeDatos bd2) {
         int i, j;
-        boolean aux;
+        boolean aux, aux2;
         boolean res = true;
         boolean mismoNombre;
 
@@ -70,9 +70,13 @@ public class BaseDeDatos {
                 //si la i-esima tabla de la 1er bd tiene el mismo nombre que 
                 //la j-esima tabla de la 2da bd, comparamos las tablas
                 if (mismoNombre) {
+                    //comparamos sus tablas
                     aux = this.getTablas().get(i).compararTablas(bd2.getTablas().get(j));
+                    //comparamos los triggers de las tablas
+                    aux2= this.getTablas().get(i).comparadorTriggers(bd2.getTablas().get(j));
+         
                     //seteamos en 0 si se llaman igual y son identicas
-                    if (aux) {
+                    if (aux && aux2) {
                         this.getDifTablas().set(i, 0);
                         bd2.getDifTablas().set(j, 0);
                     } else {
@@ -117,4 +121,5 @@ public class BaseDeDatos {
     public LinkedList<Integer> getDifTablas() {
         return difTablas;
     }
+
 }
