@@ -50,14 +50,16 @@ public class ComparadorBases {
             ObtenerDatos(db2, conn2, "public");
 
             System.out.println("Son iguales las 2 bases?: " + db1.equals(db2));
-            MostrarEstructura(db1);
-            MostrarEstructura(db2);
+            System.out.println("\n--------------------------------------------\n");
+            //MostrarEstructura(db1);
+            //MostrarEstructura(db2);
             System.out.println("diferencias "+base1+" con respecto a "+base2+" : ");
             mostrarDiferenciasBases(db1);
             System.out.println("\n--------------------------------------------\n");
             System.out.println("diferencias "+base2+" con respecto a "+base1+" : ");
             mostrarDiferenciasBases(db2);
             //Opciones(connection);
+            
         } catch (Exception sqle) {
             sqle.printStackTrace();
             System.err.println("Error connecting: " + sqle);
@@ -65,7 +67,7 @@ public class ComparadorBases {
 
     }
 
-    public static boolean ObtenerDatos(BaseDeDatos db, Connection c, String schema) {
+    public static void ObtenerDatos(BaseDeDatos db, Connection c, String schema) {
         try {
             /*metaDato*/
             DatabaseMetaData metaData = c.getMetaData();
@@ -148,7 +150,7 @@ public class ComparadorBases {
                 Procedimiento procedure = new Procedimiento(resultSetProcedimiento.getString(3));
                 resultSetParametro = metaData.getProcedureColumns(null, schema, resultSetProcedimiento.getString(3), "%");
                 while (resultSetParametro.next()) {
-                    Parametro parametro = new Parametro(resultSetParametro.getString(4), resultSetParametro.getString(7), resultSetParametro.getInt(5));
+                    Parametro parametro = new Parametro(resultSetParametro.getString(7), resultSetParametro.getInt(5));
                     procedure.agregarParametro(parametro);
                 }
                 db.agregarProcedimiento(procedure);// TODO METODO
@@ -157,7 +159,6 @@ public class ComparadorBases {
         } catch (SQLException sqle) {
             System.out.println("Ocurrio un error SQL2");
         }
-        return true;
     }
 
     public static void MostrarEstructura(BaseDeDatos db) {
@@ -171,16 +172,16 @@ public class ComparadorBases {
                 System.out.println("nombre col: " + c.getNombre() + ", tamaño: " + c.getTamaño() + ", tipo: " + c.getTipo() + ",tipo clave: " + c.getTipoClave());
                 boolean pres = c.isPresente();
                 System.out.println("Esta presente en la otra tabla?: " + pres);
-                
+
                 boolean dif = c.getDif() != null;
 
-                System.out.println("dif nombre: "+c.getDif()[0]);
-                System.out.println("dif tipoClave: "+c.getDif()[1]);
-                System.out.println("dif tipo: "+c.getDif()[2]);
-                System.out.println("dif tamaño: "+c.getDif()[3]);
-                System.out.println("dif esUnica: "+c.getDif()[4]);
-                System.out.println("dif esIndice: "+c.getDif()[5]);
-                
+                System.out.println("dif nombre: " + c.getDif()[0]);
+                System.out.println("dif tipoClave: " + c.getDif()[1]);
+                System.out.println("dif tipo: " + c.getDif()[2]);
+                System.out.println("dif tamaño: " + c.getDif()[3]);
+                System.out.println("dif esUnica: " + c.getDif()[4]);
+                System.out.println("dif esIndice: " + c.getDif()[5]);
+
                 System.out.println("");
             }
             if (!t.getTriggers().isEmpty()) {
@@ -200,7 +201,7 @@ public class ComparadorBases {
             for (Procedimiento p : db.getProcedimientos()) {
                 System.out.println("Nombre Procedimiento:" + p.getNombre() + "\n");
                 for (Parametro pa : p.getParam()) {
-                    System.out.println("nombre:" + pa.getNombre() + " pasaje: " + pa.getTipoPasaje() + ", tipo: " + pa.getTipo());
+                    System.out.println("pasaje: " + pa.getTipoPasaje() + ", tipo: " + pa.getTipo());
                 }
                 System.out.println("------------------------------------------- ");
                 System.out.println("");
@@ -209,11 +210,13 @@ public class ComparadorBases {
         }
 
     }
-        
-    public static void mostrarDiferenciasBases(BaseDeDatos db){
-        for(Tabla t: db.getTablas()){
+
+    public static void mostrarDiferenciasBases(BaseDeDatos db) {
+        for (Tabla t : db.getTablas()) {
             t.mostrarDiferenciasTabla();
+        }
+        for (Procedimiento p: db.getProcedimientos()){
+            p.mostrarDiferenciasProcedimientos();
         }
     }
 }
-

@@ -155,20 +155,16 @@ public class Tabla {
                         aux = (this.getTriggers().get(i).equals(other.getTriggers().get(j)));
                         //si se marco como presente al primero
                         if (this.getTriggers().get(i).presente) {
-                            System.out.println("entro");
                             if (aux) {
-                                System.out.println("if");
                                 //tienen el mismo nombre y estructura
                                 this.getDifTriggers().set(i, 0);
                                 other.getDifTriggers().set(j, 0);
                             } else {
-                                System.out.println("else");
                                 //tienen el mismo nombre pero difieren en su estructura
                                 this.getDifTriggers().set(i, 1);
                                 other.getDifTriggers().set(j, 1);
                                 res = false;
                             }
-                            System.out.println("sale");
                             break;
                         }
 

@@ -15,18 +15,19 @@ public class Procedimiento {
 
     //nombre del procedimiento
     private String nombre;
-    
+
     //lista de parametros del procedimiento
     private LinkedList<Parametro> param;
-    
+
     //lista de diferencias con procedimiento del mismo nombre, en cuanto a parametros
-    //0= igualdad de nombre, igualdad de tipo 
-    //1= unico del procedimiento
+    //0= igualdad de tipo y tipo de pasaje
+    //1= difieren en algun campo
+    //2= parametro unico (excede en posicion a la cantidad de parametros del otro procedimiento)
     private LinkedList<Integer> dif;
-    
+
     //campo que indica si un procedimiento esta presente,se llama igual a otro procedimeinto, en la otra DB
     boolean presente;
-    
+
     //constructor de clase
     public Procedimiento(String nombreProc) {
         this.nombre = nombreProc;
@@ -37,7 +38,7 @@ public class Procedimiento {
 
     public void agregarParametro(Parametro p) {
         this.getParam().addLast(p);
-        this.getDif().addLast(1);
+        this.getDif().addLast(2);
     }
 
     /*
@@ -46,73 +47,82 @@ public class Procedimiento {
      * y a la vez guarda una lista con sus diferencias
      */
     public boolean compararProcedimientos(Procedimiento other) {
-        int i, j;
-        boolean aux;
-        boolean res = true;
+        int i;
+        boolean res;
 
         if (other == null) {
             return false;
         }
-        if (!this.nombre.equals(other.nombre)) {
-            return false;
-        }
-        //si los procedimientos se llaman igual, seteamos presente en true
+        //seteamos presente en true
         //en ambos procedimientos
         this.presente = true;
         other.presente = true;
-        //si un procedimiento tiene mas parametros que otro, son distintos
-        if (this.getParam().size() != other.getParam().size()) {
+        if (this.getParam().size() == other.getParam().size()) {
+            res = compararParametros(this, other);
+        } else {
+            if (this.getParam().size() < other.getParam().size()) {
+                compararParametros(this, other);
+            } else {
+                compararParametros(other, this);
+            }
             res = false;
         }
-        for (i = 0; i < this.getParam().size(); i++) {
-            for (j = 0; j < other.getParam().size(); j++) {
-                //si el parametro del 2do procedimiento no estaba presente en el 1ero
-                if (!other.param.get(j).presente) {
-                    System.out.println("compara: " + this.getParam().get(i).getTipo() + ", " + this.getParam().get(i).getTipoPasaje());
-                    System.out.println("Con : " + other.getParam().get(j).getTipo() + ", " + other.getParam().get(j).getTipoPasaje());
-                    aux = this.getParam().get(i).equals(other.getParam().get(j));
-                    System.out.println("res: " + aux);
-                    /* si se llaman igual (present == true) 
-                     * guardamos el resultado de la comparacion entre ambos
-                     */
-                    if (this.getParam().get(i).presente) {
-                        //seteamos en 0 si ambos parametros son identicos
+        //si un procedimiento tiene mas parametros que otro, son distintos
+        return res;
+    }
 
-                        System.out.println("entro if(0)");
-                        this.getDif().set(i, 0);
-                        other.getDif().set(j, 0);
+    public String getNombre() {
+        return nombre;
+    }
 
-                        break;
-                    }
-                }
-                //Si llego al final del ciclo, el i-esimo parametro del 1er procedimiento
-                //no esta en el 2do
-                if (j == other.getParam().size() - 1) {
-                    res = false;
-                }
+    public LinkedList<Parametro> getParam() {
+        return param;
+    }
+
+    public LinkedList<Integer> getDif() {
+        return dif;
+    }
+
+    private static boolean compararParametros(Procedimiento p1, Procedimiento p2) {
+        int i;
+        boolean aux = true;
+        //resultado final
+        boolean res = true;
+        for (i = 0; i < p1.getParam().size(); i++) {
+            aux = p1.getParam().get(i).equals(p2.getParam().get(i));
+            /* si se llaman igual (present == true) 
+             * guardamos el resultado de la comparacion entre ambos
+             */
+            res = res && aux;
+            if (aux) {
+                //seteamos en 0 si ambos parametros son identicos
+                p1.getDif().set(i, 0);
+                p2.getDif().set(i, 0);
+            } else {
+                p1.getDif().set(i, 1);
+                p2.getDif().set(i, 1);
             }
         }
         return res;
     }
 
-    /**
-     * @return the nombre
-     */
-    public String getNombre() {
-        return nombre;
-    }
+    public void mostrarDiferenciasProcedimientos() {
+        if (!this.presente) {
+            System.out.println("    el procedimiento " + this.getNombre() + " es unico de la base de datos");
+        } else {
+            System.out.println("    el procedimiento " + this.getNombre() + " comparte nombre con otro procedimiento de la otra base de datos");
+            //recorremos la lista dif que contiene las diferencias de columnas entre tablas del mismo nombre
+            for (int i = 0; i < this.getDif().size(); i++) {
+                //si el i-esimo del procedimiento es igual al i-esimo parametro del procedimiento
+                //que tiene el mismo nombre pero en la otra base de datos
+                Parametro paramActual = this.getParam().get(i);
+                if (paramActual.isPresente()) {
+                    paramActual.mostrarDiferenciasParametro(i);
+                } else {
+                    System.out.println("        el parametro ubicado en la posicion " + (i) + " es unico del procedimiento " + this.getNombre());
+                }
+            }
 
-    /**
-     * @return the param
-     */
-    public LinkedList<Parametro> getParam() {
-        return param;
-    }
-
-    /**
-     * @return the dif
-     */
-    public LinkedList<Integer> getDif() {
-        return dif;
+        }
     }
 }
