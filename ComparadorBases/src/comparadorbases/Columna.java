@@ -25,12 +25,6 @@ public class Columna {
     //int que indica si es clave primaria, secundaria/foranea o nada (0=nada, 1=primaria, 2=secundaria)
     private int tipoClave;
 
-    //campo booleano que indica si la columna es unica o no
-    private boolean esUnica;
-
-    //campo booleano que indica si la columna tiene o no un indice
-    private boolean esIndice;
-
     //campo que indica si hay una columna con el mismo nombre en la otra BD
     boolean presente;
 
@@ -40,15 +34,13 @@ public class Columna {
     /*
      * Constructor de clase
      */
-    public Columna(String nombre, int tipoClave, String tipo, int tamaño, boolean esUnica, boolean esIndice) {
+    public Columna(String nombre, int tipoClave, String tipo, int tamaño) {
         this.nombre = nombre;
         this.tipoClave = tipoClave;
         this.tipo = tipo;
         this.tamaño = tamaño;
-        this.esUnica = esUnica;
-        this.esIndice = esIndice;
         this.presente = false;
-        this.dif = new boolean[6];
+        this.dif = new boolean[4];
     }
 
     public int getTamaño() {
@@ -121,14 +113,6 @@ public class Columna {
                     difer[3] = false;
                     aux = false;
                 }
-                if (this.esUnica() != (other.esUnica())) {
-                    difer[4] = false;
-                    aux = false;
-                }
-                if (this.esIndice() != other.esIndice()) {
-                    difer[5] = false;
-                    aux = false;
-                }
                 //actualizamos el arreglo dif
                 this.dif = difer;
                 other.dif = difer;
@@ -149,14 +133,6 @@ public class Columna {
             res = res && b;
         }
         return res;
-    }
-
-    public boolean esUnica() {
-        return esUnica;
-    }
-
-    public boolean esIndice() {
-        return esIndice;
     }
 
     public void mostrarDiferenciasColumna() {
@@ -181,12 +157,6 @@ public class Columna {
                             break;
                         case 3:
                             System.out.println("            en tamaño: " + this.getTamaño());
-                            break;
-                        case 4:
-                            System.out.println("            en si el campo es unico o no: " + this.esUnica());
-                            break;
-                        case 5:
-                            System.out.println("            en si el campo es indice o no: " + this.esIndice());
                             break;
                     }
                 }
